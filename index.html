@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cientificos Antonianos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background-color: #F6E8C3; color: #6B4423; }
+        .active { background-color: #6B4423; color: white; }
+        .auth-bg {
+            background:
+                radial-gradient(circle at 20% 20%, rgba(34, 139, 34, 0.25), transparent 32%),
+                radial-gradient(circle at 80% 10%, rgba(70, 130, 180, 0.25), transparent 30%),
+                linear-gradient(135deg, #6B4423 0%, #8B5A2B 45%, #F6E8C3 100%);
+        }
+        .page { padding-bottom: 5.5rem; }
+        .dark-mode { background: #1f2933; color: #F6E8C3; }
+        .dark-mode main { background: #1f2933; }
+        .dark-mode .bg-white { background-color: #2f3a45 !important; color: #F6E8C3; }
+        .dark-mode .text-gray-600, .dark-mode .text-gray-700, .dark-mode .text-gray-500 { color: rgba(246, 232, 195, 0.78) !important; }
+        .font-large { font-size: 18px; }
+        .font-large h1 { font-size: 3.25rem; }
+        .font-large h2 { font-size: 2.75rem; }
+        @media (max-width: 900px) {
+            .app-shell { flex-direction: column; height: auto; min-height: 100vh; }
+            .sidebar { width: 100%; }
+            .nav-area { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .app-footer { left: 0; }
+        }
+    </style>
+</head>
+<body class="bg-[#F6E8C3] text-[#6B4423]">
+    <section id="auth-screen" class="hidden min-h-screen auth-bg p-6 flex items-center justify-center">
+        <div class="w-full max-w-5xl grid lg:grid-cols-[1.1fr_0.9fr] bg-white rounded-[2rem] overflow-hidden shadow-2xl">
+            <div class="bg-[#6B4423] text-white p-8 lg:p-12 flex flex-col justify-between min-h-[520px]">
+                <div>
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-16 h-16 bg-[#F6E8C3] text-4xl rounded-2xl flex items-center justify-center">🔬</div>
+                        <div>
+                            <h1 class="text-3xl font-bold leading-tight">Cientificos Antonianos</h1>
+                            <p class="text-[#F6E8C3]/80">Ciencia y Tecnologia</p>
+                        </div>
+                    </div>
+                    <h2 class="text-4xl lg:text-5xl font-bold leading-tight mb-5">Explora, experimenta y demuestra lo que sabes.</h2>
+                    <p class="text-[#F6E8C3]/85 text-lg max-w-lg">Ingresa con tu cuenta escolar para guardar tu progreso, puntos, insignias y evaluaciones.</p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-white/10 rounded-2xl p-4">
+                        <div class="text-3xl mb-1">⚗️</div>
+                        <p class="text-xs text-[#F6E8C3]/85">Laboratorio</p>
+                    </div>
+                    <div class="bg-white/10 rounded-2xl p-4">
+                        <div class="text-3xl mb-1">🏅</div>
+                        <p class="text-xs text-[#F6E8C3]/85">Insignias</p>
+                    </div>
+                    <div class="bg-white/10 rounded-2xl p-4">
+                        <div class="text-3xl mb-1">🧠</div>
+                        <p class="text-xs text-[#F6E8C3]/85">Retos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 lg:p-12">
+                <div class="flex bg-[#F6E8C3] rounded-2xl p-1 mb-8">
+                    <button id="login-tab" onclick="setAuthMode('login')" class="flex-1 py-3 rounded-xl font-semibold bg-white text-[#6B4423] shadow-sm">Iniciar sesion</button>
+                    <button id="register-tab" onclick="setAuthMode('register')" class="flex-1 py-3 rounded-xl font-semibold text-[#6B4423]/70">Registrarse</button>
+                </div>
+
+                <form id="login-form" class="space-y-5" onsubmit="loginUser(event)">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Correo o usuario</label>
+                        <input id="login-user" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" placeholder="ejemplo: alumno@antonianos.pe" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Contrasena</label>
+                        <input id="login-password" type="password" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" placeholder="Tu contrasena" required>
+                    </div>
+                    <p id="login-message" class="hidden text-sm rounded-2xl px-4 py-3"></p>
+                    <button class="w-full bg-[#6B4423] hover:bg-[#8B5A2B] text-white py-4 rounded-2xl font-semibold">Entrar a mi aula</button>
+                </form>
+
+                <form id="register-form" class="hidden space-y-4" onsubmit="registerUser(event)">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Nombre completo</label>
+                        <input id="register-name" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" placeholder="Tu nombre y apellido" required>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Grado</label>
+                            <select id="register-grade" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" required>
+                                <option value="1° Secundaria">1° Secundaria</option>
+                                <option value="2° Secundaria">2° Secundaria</option>
+                                <option value="3° Secundaria">3° Secundaria</option>
+                                <option value="4° Secundaria">4° Secundaria</option>
+                                <option value="5° Secundaria">5° Secundaria</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Seccion</label>
+                            <input id="register-section" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" placeholder="A, B, C..." maxlength="2">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Correo o usuario</label>
+                        <input id="register-user" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" placeholder="Crea tu usuario" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Contrasena</label>
+                        <input id="register-password" type="password" minlength="4" class="w-full rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none focus:ring-4 focus:ring-[#6B4423]/15" placeholder="Minimo 4 caracteres" required>
+                    </div>
+                    <p id="register-message" class="hidden text-sm rounded-2xl px-4 py-3"></p>
+                    <button class="w-full bg-[#6B4423] hover:bg-[#8B5A2B] text-white py-4 rounded-2xl font-semibold">Crear mi cuenta</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div id="app-screen" class="hidden flex h-screen overflow-hidden app-shell">
+        <aside class="sidebar w-72 bg-[#6B4423] text-white flex flex-col">
+            <div class="p-6 border-b border-[#F6E8C3]/30">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-[#F6E8C3] rounded-2xl flex items-center justify-center text-3xl">🔬</div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight">CIENTIFICOS</h1>
+                        <p class="text-[#F6E8C3]/80 text-sm -mt-1">ANTONIANOS</p>
+                    </div>
+                </div>
+                <p class="text-xs text-[#F6E8C3]/70 mt-4">"Explorando la ciencia, transformando nuestro mundo."</p>
+            </div>
+
+            <nav class="nav-area flex-1 p-4 space-y-1 overflow-y-auto">
+                <a onclick="navigateTo('home')" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-home"><i class="fas fa-home w-5"></i> Inicio</a>
+                <a onclick="navigateTo('temas')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-temas"><i class="fas fa-book w-5"></i> Temas</a>
+                <a onclick="navigateTo('lab')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-lab"><i class="fas fa-flask w-5"></i> Laboratorio Virtual</a>
+                <a onclick="navigateTo('videos')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-videos"><i class="fas fa-video w-5"></i> Videos Educativos</a>
+                <a onclick="navigateTo('evaluaciones')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-evaluaciones"><i class="fas fa-clipboard-check w-5"></i> Evaluaciones</a>
+                <a onclick="navigateTo('juegos')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-juegos"><i class="fas fa-gamepad w-5"></i> Juegos</a>
+                <a onclick="navigateTo('progreso')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer" id="nav-progreso"><i class="fas fa-chart-line w-5"></i> Mi Progreso</a>
+            </nav>
+
+            <div class="relative z-20 p-4 border-t border-[#F6E8C3]/30 mt-auto bg-[#6B4423]">
+                <div class="flex items-center gap-3 bg-[#F6E8C3]/10 rounded-3xl p-3 mb-3">
+                    <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-2xl">🧪</div>
+                    <div class="text-sm min-w-0">
+                        <div id="profile-name" class="font-medium truncate">Estudiante</div>
+                        <div id="profile-grade" class="text-[#F6E8C3]/70 text-xs">Secundaria</div>
+                    </div>
+                </div>
+                <button id="logout-button" onclick="logoutUser()" class="w-full bg-white/10 hover:bg-white/20 rounded-2xl px-4 py-3 text-sm font-semibold flex items-center justify-center gap-2">
+                    <i class="fas fa-right-from-bracket"></i> Cerrar sesion
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-auto" id="main-content">
+            <div id="page-home" class="page p-8">
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
+                        <div class="min-h-80 bg-gradient-to-br from-[#6B4423] via-[#228B22] to-[#4682B4] relative flex items-center justify-center p-8">
+                            <div class="text-center text-white z-10">
+                                <div class="text-6xl mb-4">🔬⚡🌍</div>
+                                <h1 class="text-4xl lg:text-5xl font-bold mb-2">Bienvenido, <span id="welcome-name">estudiante</span></h1>
+                                <p class="text-xl max-w-md mx-auto">Ciencia y Tecnologia para secundaria</p>
+                                <p class="text-sm mt-4 opacity-90">I.E. San Antonio de Huamanga - Ayacucho</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div onclick="navigateTo('temas')" class="bg-white rounded-3xl p-8 card-hover cursor-pointer border border-[#6B4423]/10">
+                            <div class="text-5xl mb-6">📘</div>
+                            <h3 class="text-2xl font-semibold mb-2">Temas del curso</h3>
+                            <p class="text-gray-600">Materia, energia, ecosistemas, tecnologia y metodo cientifico.</p>
+                        </div>
+                        <div onclick="navigateTo('lab')" class="bg-white rounded-3xl p-8 card-hover cursor-pointer border border-[#6B4423]/10">
+                            <div class="text-5xl mb-6">🧪</div>
+                            <h3 class="text-2xl font-semibold mb-2">Laboratorio virtual</h3>
+                            <p class="text-gray-600">Experimentos guiados con pregunta, hipotesis, datos y conclusion.</p>
+                        </div>
+                        <div onclick="navigateTo('evaluaciones')" class="bg-white rounded-3xl p-8 card-hover cursor-pointer border border-[#6B4423]/10">
+                            <div class="text-5xl mb-6">🏅</div>
+                            <h3 class="text-2xl font-semibold mb-2">Retos y puntos</h3>
+                            <p class="text-gray-600">Resuelve cuestionarios y gana insignias cientificas.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 mt-8 border border-[#6B4423]/10">
+                        <div class="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold">Herramientas del estudiante</h2>
+                                <p class="text-gray-600">Accesos rapidos para estudiar, preguntar, practicar y organizarte.</p>
+                            </div>
+                            <div class="flex gap-2 bg-[#F6E8C3] rounded-2xl p-2 lg:min-w-[360px]">
+                                <input id="home-search" class="flex-1 bg-transparent px-3 py-2 outline-none text-[#6B4423]" placeholder="Buscar tema: Ecosistemas">
+                                <button onclick="searchTopic()" class="bg-[#6B4423] text-white px-4 py-2 rounded-xl font-semibold"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <button onclick="navigateTo('tutor')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">🤖</span><strong>Tutor IA</strong><p class="text-sm text-gray-600 mt-1">Pregunta y recibe explicaciones.</p></button>
+                            <button onclick="navigateTo('plan')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">📅</span><strong>Plan de estudio</strong><p class="text-sm text-gray-600 mt-1">Lecciones y recordatorios.</p></button>
+                            <button onclick="navigateTo('insignias')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">🏅</span><strong>Insignias</strong><p class="text-sm text-gray-600 mt-1">Medallas desbloqueadas.</p></button>
+                            <button onclick="navigateTo('ranking')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">🏆</span><strong>Ranking</strong><p class="text-sm text-gray-600 mt-1">Tabla de puntos.</p></button>
+                            <button onclick="navigateTo('buscar')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">🔍</span><strong>Buscar tema</strong><p class="text-sm text-gray-600 mt-1">Ir directo al contenido.</p></button>
+                            <button onclick="navigateTo('biblioteca')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">📂</span><strong>Biblioteca</strong><p class="text-sm text-gray-600 mt-1">Guias, PDFs y enlaces.</p></button>
+                            <button onclick="navigateTo('experimentos')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">🔬</span><strong>Experimentos</strong><p class="text-sm text-gray-600 mt-1">Practicas en casa.</p></button>
+                            <button onclick="navigateTo('pregunta-dia')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">❓</span><strong>Pregunta del dia</strong><p class="text-sm text-gray-600 mt-1">Responde y gana puntos.</p></button>
+                            <button onclick="navigateTo('novedades')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">📢</span><strong>Novedades</strong><p class="text-sm text-gray-600 mt-1">Avisos del profesor.</p></button>
+                            <button onclick="navigateTo('configuracion')" class="text-left bg-[#F6E8C3]/70 hover:bg-[#F6E8C3] rounded-2xl p-5 border border-[#6B4423]/10"><span class="text-3xl block mb-3">⚙️</span><strong>Configuracion</strong><p class="text-sm text-gray-600 mt-1">Tema, letra, sonidos y avatar.</p></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-temas" class="page hidden p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Temas de Ciencia y Tecnologia</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="temas-grid"></div>
+                </div>
+            </div>
+
+            <div id="page-lab" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Laboratorio Virtual</h2>
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                            <div class="text-6xl mb-5">⚗️</div>
+                            <h3 class="text-2xl font-bold mb-3">Mezcla de sustancias</h3>
+                            <p class="text-gray-600 mb-5">Observa cambios fisicos y quimicos al combinar materiales cotidianos.</p>
+                            <ol class="text-left text-sm text-gray-700 space-y-2 mb-6">
+                                <li>1. Formula una pregunta investigable.</li>
+                                <li>2. Escribe tu hipotesis.</li>
+                                <li>3. Registra observaciones y evidencias.</li>
+                                <li>4. Redacta una conclusion.</li>
+                            </ol>
+                            <button onclick="completeActivity('Laboratorio: Mezcla de sustancias', 25)" class="bg-[#6B4423] hover:bg-[#8B5A2B] text-white px-6 py-3 rounded-2xl font-semibold">Completar practica</button>
+                        </div>
+                        <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                            <div class="text-6xl mb-5">🌱</div>
+                            <h3 class="text-2xl font-bold mb-3">Germinacion de semillas</h3>
+                            <p class="text-gray-600 mb-5">Compara como la luz, el agua y el suelo influyen en el crecimiento.</p>
+                            <button onclick="completeActivity('Laboratorio: Germinacion de semillas', 25)" class="bg-[#6B4423] hover:bg-[#8B5A2B] text-white px-6 py-3 rounded-2xl font-semibold">Registrar resultados</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-videos" class="page hidden p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Videos Educativos</h2>
+                    <div class="grid md:grid-cols-3 gap-6" id="videos-grid"></div>
+                </div>
+            </div>
+
+            <div id="page-evaluaciones" class="page hidden p-8">
+                <div class="max-w-4xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-4">Evaluacion rapida</h2>
+                    <p class="text-gray-600 mb-8">Marca las respuestas y revisa tu puntaje. Se guardara en tu progreso.</p>
+                    <div id="quiz-box" class="space-y-6"></div>
+                    <button onclick="gradeQuiz()" class="mt-8 bg-[#6B4423] hover:bg-[#8B5A2B] text-white px-8 py-4 rounded-2xl font-semibold">Enviar evaluacion</button>
+                    <p id="quiz-result" class="mt-5 hidden rounded-2xl px-5 py-4 font-semibold"></p>
+                </div>
+            </div>
+
+            <div id="page-juegos" class="page hidden p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Juegos y Retos</h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10 card-hover">
+                            <div class="text-5xl mb-5">🧩</div>
+                            <h3 class="text-2xl font-bold mb-2">Relaciona conceptos</h3>
+                            <p class="text-gray-600 mb-5">Une termino, significado y ejemplo.</p>
+                            <button onclick="completeActivity('Juego: Relaciona conceptos', 15)" class="bg-[#6B4423] text-white px-5 py-3 rounded-2xl font-semibold">Ganar puntos</button>
+                        </div>
+                        <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10 card-hover">
+                            <div class="text-5xl mb-5">🔎</div>
+                            <h3 class="text-2xl font-bold mb-2">Detective cientifico</h3>
+                            <p class="text-gray-600 mb-5">Analiza evidencias y elige una explicacion.</p>
+                            <button onclick="completeActivity('Juego: Detective cientifico', 15)" class="bg-[#6B4423] text-white px-5 py-3 rounded-2xl font-semibold">Resolver caso</button>
+                        </div>
+                        <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10 card-hover">
+                            <div class="text-5xl mb-5">🎯</div>
+                            <h3 class="text-2xl font-bold mb-2">Reto de energia</h3>
+                            <p class="text-gray-600 mb-5">Identifica transformaciones de energia.</p>
+                            <button onclick="completeActivity('Juego: Reto de energia', 15)" class="bg-[#6B4423] text-white px-5 py-3 rounded-2xl font-semibold">Iniciar reto</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-progreso" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Mi Progreso</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white rounded-3xl p-6 border border-[#6B4423]/10">
+                            <p class="text-sm text-gray-500">Puntos</p>
+                            <div id="points-view" class="text-4xl font-bold mt-2">0</div>
+                        </div>
+                        <div class="bg-white rounded-3xl p-6 border border-[#6B4423]/10">
+                            <p class="text-sm text-gray-500">Nivel</p>
+                            <div id="level-view" class="text-4xl font-bold mt-2">Explorador</div>
+                        </div>
+                        <div class="bg-white rounded-3xl p-6 border border-[#6B4423]/10">
+                            <p class="text-sm text-gray-500">Actividades</p>
+                            <div id="activities-view" class="text-4xl font-bold mt-2">0</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                        <h3 class="text-2xl font-bold mb-5">Insignias</h3>
+                        <div id="badges-view" class="flex flex-wrap gap-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-tutor" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-4">Tutor IA</h2>
+                    <p class="text-gray-600 mb-6">Escribe una pregunta de Ciencia y Tecnologia. Esta version responde con una guia escolar preparada.</p>
+                    <div id="tutor-chat" class="bg-[#F6E8C3]/45 rounded-3xl p-5 min-h-64 space-y-4 mb-5"></div>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input id="tutor-input" class="flex-1 rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none" placeholder="Ejemplo: Explicame la fotosintesis">
+                        <button onclick="askTutor()" class="bg-[#6B4423] text-white px-6 py-3 rounded-2xl font-semibold">Preguntar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-plan" class="page hidden p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Plan de estudio</h2>
+                    <div class="grid md:grid-cols-3 gap-6" id="study-plan"></div>
+                </div>
+            </div>
+
+            <div id="page-insignias" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-6">Insignias</h2>
+                    <div id="all-badges-view" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+
+            <div id="page-ranking" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-3">Ranking</h2>
+                    <p class="text-gray-600 mb-6">Tabla local con los estudiantes registrados en este navegador.</p>
+                    <div id="ranking-table" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <div id="page-buscar" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-4">Buscar tema</h2>
+                    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                        <input id="search-page-input" class="flex-1 rounded-2xl border border-[#6B4423]/20 px-4 py-3 outline-none" placeholder="Escribe: ecosistemas, energia, materia...">
+                        <button onclick="searchTopic(true)" class="bg-[#6B4423] text-white px-6 py-3 rounded-2xl font-semibold">Buscar</button>
+                    </div>
+                    <div id="search-results" class="grid md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+
+            <div id="page-biblioteca" class="page hidden p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Biblioteca</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="library-grid"></div>
+                </div>
+            </div>
+
+            <div id="page-experimentos" class="page hidden p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Experimentos en casa</h2>
+                    <div class="grid md:grid-cols-3 gap-6" id="experiments-grid"></div>
+                </div>
+            </div>
+
+            <div id="page-pregunta-dia" class="page hidden p-8">
+                <div class="max-w-4xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-4">Pregunta del dia</h2>
+                    <div id="daily-question-box"></div>
+                    <p id="daily-result" class="hidden mt-5 rounded-2xl px-5 py-4 font-semibold"></p>
+                </div>
+            </div>
+
+            <div id="page-novedades" class="page hidden p-8">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">Novedades</h2>
+                    <div class="space-y-4" id="news-list"></div>
+                </div>
+            </div>
+
+            <div id="page-configuracion" class="page hidden p-8">
+                <div class="max-w-4xl mx-auto bg-white rounded-3xl p-8 border border-[#6B4423]/10">
+                    <h2 class="text-4xl font-bold mb-6">Configuracion</h2>
+                    <div class="space-y-6">
+                        <label class="flex items-center justify-between gap-4 bg-[#F6E8C3]/55 rounded-2xl p-5">
+                            <span><strong>Tema oscuro</strong><span class="block text-sm text-gray-600">Cambia el color general de la app.</span></span>
+                            <input id="setting-dark" type="checkbox" onchange="saveSettings()">
+                        </label>
+                        <label class="flex items-center justify-between gap-4 bg-[#F6E8C3]/55 rounded-2xl p-5">
+                            <span><strong>Letra grande</strong><span class="block text-sm text-gray-600">Aumenta el tamano del texto.</span></span>
+                            <input id="setting-font" type="checkbox" onchange="saveSettings()">
+                        </label>
+                        <label class="flex items-center justify-between gap-4 bg-[#F6E8C3]/55 rounded-2xl p-5">
+                            <span><strong>Sonidos</strong><span class="block text-sm text-gray-600">Activa sonidos de logro.</span></span>
+                            <input id="setting-sound" type="checkbox" onchange="saveSettings()">
+                        </label>
+                        <div class="bg-[#F6E8C3]/55 rounded-2xl p-5">
+                            <strong>Avatar</strong>
+                            <div class="flex flex-wrap gap-3 mt-4">
+                                <button onclick="chooseAvatar('🧪')" class="avatar-option text-3xl bg-white rounded-2xl p-3">🧪</button>
+                                <button onclick="chooseAvatar('🔬')" class="avatar-option text-3xl bg-white rounded-2xl p-3">🔬</button>
+                                <button onclick="chooseAvatar('🌱')" class="avatar-option text-3xl bg-white rounded-2xl p-3">🌱</button>
+                                <button onclick="chooseAvatar('⚡')" class="avatar-option text-3xl bg-white rounded-2xl p-3">⚡</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="app-footer fixed bottom-0 left-72 right-0 bg-white border-t border-[#6B4423]/10 py-4 text-center text-xs text-[#6B4423]/70">
+                Institucion Educativa San Antonio de Huamanga - Ciencia y Tecnologia - 2026
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const STORAGE_USERS = 'cyt_antonianos_users';
+        const STORAGE_SESSION = 'cyt_antonianos_session';
+
+        const temasCiencia = [
+            { title: 'Metodo cientifico', desc: 'Pregunta, hipotesis, experimentacion, analisis y conclusion.', img: '🔍', color: 'bg-blue-100' },
+            { title: 'La materia', desc: 'Propiedades, estados y cambios fisicos y quimicos.', img: '🧱', color: 'bg-amber-100' },
+            { title: 'Energia', desc: 'Formas, fuentes y transformaciones en la vida diaria.', img: '⚡', color: 'bg-yellow-100' },
+            { title: 'Seres vivos', desc: 'Celula, funciones vitales, biodiversidad y clasificacion.', img: '🌱', color: 'bg-emerald-100' },
+            { title: 'Ecosistemas', desc: 'Cadenas alimentarias, equilibrio ambiental y conservacion.', img: '🌍', color: 'bg-teal-100' },
+            { title: 'Tecnologia e innovacion', desc: 'Soluciones tecnologicas para problemas de la comunidad.', img: '🛠️', color: 'bg-slate-100' }
+        ];
+
+        const videos = [
+            { icon: '🎬', title: 'El metodo cientifico', desc: 'Como investigar un fenomeno paso a paso.' },
+            { icon: '🌋', title: 'Cambios de la materia', desc: 'Diferencias entre cambio fisico y cambio quimico.' },
+            { icon: '🔋', title: 'Energia en accion', desc: 'Ejemplos de energia mecanica, electrica y termica.' }
+        ];
+
+        const quiz = [
+            { q: 'Que paso inicia una investigacion cientifica?', a: ['Formular una pregunta', 'Comprar materiales', 'Copiar una conclusion'], ok: 0 },
+            { q: 'Un cambio de estado del agua es un cambio...', a: ['Quimico', 'Fisico', 'Biologico'], ok: 1 },
+            { q: 'Las plantas producen su alimento mediante...', a: ['Fotosintesis', 'Evaporacion', 'Oxidacion'], ok: 0 }
+        ];
+
+        const studyPlan = [
+            { day: 'Hoy', title: 'Metodo cientifico', reminder: 'Completar una pregunta investigable y una hipotesis.' },
+            { day: 'Manana', title: 'La materia', reminder: 'Repasar estados de la materia y cambios fisicos.' },
+            { day: 'Viernes', title: 'Ecosistemas', reminder: 'Dibujar una cadena alimentaria de tu localidad.' }
+        ];
+
+        const libraryItems = [
+            { icon: '🖼️', type: 'Infografia', title: 'Partes de la celula', desc: 'Resumen visual de organelos y funciones.' },
+            { icon: '📄', type: 'PDF', title: 'Guia de indagacion', desc: 'Pasos para investigar como estudiante cientifico.' },
+            { icon: '📘', type: 'Guia', title: 'Energia y movimiento', desc: 'Ejercicios y ejemplos cotidianos.' },
+            { icon: '🔗', type: 'Enlace', title: 'Recursos interactivos', desc: 'Simuladores y lecturas recomendadas.' }
+        ];
+
+        const experiments = [
+            { icon: '🌱', title: 'Semilla en algodon', materials: 'Frijol, algodon, vaso y agua.', task: 'Observa cambios durante 5 dias y registra datos.' },
+            { icon: '🎈', title: 'Globo electrostatico', materials: 'Globo, papelitos y tela.', task: 'Frota el globo y explica la atraccion electrica.' },
+            { icon: '🥛', title: 'Densidad por capas', materials: 'Agua, aceite, miel y vaso.', task: 'Ordena liquidos por densidad y dibuja el resultado.' }
+        ];
+
+        const dailyQuestions = [
+            { q: 'Que organelo controla la mayoria de funciones de la celula?', a: ['Nucleo', 'Pared celular', 'Vacuola'], ok: 0 },
+            { q: 'Que gas absorben las plantas durante la fotosintesis?', a: ['Oxigeno', 'Dioxido de carbono', 'Nitrogeno'], ok: 1 },
+            { q: 'Que tipo de energia tiene un objeto por estar en movimiento?', a: ['Cinetica', 'Quimica', 'Sonora'], ok: 0 }
+        ];
+
+        const news = [
+            { title: 'Recordatorio de laboratorio', text: 'Traer una observacion de casa sobre cambios fisicos o quimicos.' },
+            { title: 'Reto semanal', text: 'Explica una solucion tecnologica para cuidar el agua en tu comunidad.' },
+            { title: 'Dato cientifico', text: 'Ayacucho tiene ecosistemas variados que sirven para estudiar biodiversidad.' }
+        ];
+
+        const allBadges = ['Nuevo Antoniano', 'Aprendiz Cientifico', 'Investigador Antoniano', 'Explorador de Temas', 'Experto en Retos'];
+
+        function getUsers() {
+            return JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+        }
+
+        function normalizeUser(value) {
+            return value.trim().toLowerCase();
+        }
+
+        function setAuthMode(mode) {
+            const isLogin = mode === 'login';
+            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('register-form').classList.toggle('hidden', isLogin);
+            document.getElementById('login-tab').className = isLogin ? 'flex-1 py-3 rounded-xl font-semibold bg-white text-[#6B4423] shadow-sm' : 'flex-1 py-3 rounded-xl font-semibold text-[#6B4423]/70';
+            document.getElementById('register-tab').className = !isLogin ? 'flex-1 py-3 rounded-xl font-semibold bg-white text-[#6B4423] shadow-sm' : 'flex-1 py-3 rounded-xl font-semibold text-[#6B4423]/70';
+        }
+
+        function showMessage(id, text, type) {
+            const box = document.getElementById(id);
+            box.textContent = text;
+            box.className = `text-sm rounded-2xl px-4 py-3 ${type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+        }
+
+        function registerUser(event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value.trim();
+            const grade = document.getElementById('register-grade').value;
+            const section = document.getElementById('register-section').value.trim().toUpperCase();
+            const username = normalizeUser(document.getElementById('register-user').value);
+            const password = document.getElementById('register-password').value;
+            const users = getUsers();
+
+            if (users.some(user => user.username === username)) {
+                showMessage('register-message', 'Ese usuario ya existe. Prueba iniciar sesion.', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+                name,
+                grade: section ? `${grade} - ${section}` : grade,
+                username,
+                password,
+                avatar: '🧪',
+                settings: { dark: false, largeFont: false, sound: false },
+                progress: { points: 0, activities: [], badges: ['Nuevo Antoniano'] }
+            };
+
+            users.push(newUser);
+            saveUsers(users);
+            localStorage.setItem(STORAGE_SESSION, newUser.id);
+            startApp(newUser);
+        }
+
+        function loginUser(event) {
+            event.preventDefault();
+            const username = normalizeUser(document.getElementById('login-user').value);
+            const password = document.getElementById('login-password').value;
+            const user = getUsers().find(item => item.username === username && item.password === password);
+
+            if (!user) {
+                showMessage('login-message', 'Usuario o contrasena incorrectos.', 'error');
+                return;
+            }
+
+            localStorage.setItem(STORAGE_SESSION, user.id);
+            startApp(user);
+        }
+
+        function logoutUser() {
+            localStorage.removeItem(STORAGE_SESSION);
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            setAuthMode('login');
+        }
+
+        function currentUser() {
+            const sessionId = localStorage.getItem(STORAGE_SESSION);
+            return getUsers().find(user => user.id === sessionId);
+        }
+
+        function updateCurrentUser(updatedUser) {
+            const users = getUsers().map(user => user.id === updatedUser.id ? updatedUser : user);
+            saveUsers(users);
+        }
+
+        function startApp(user) {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            document.getElementById('profile-name').textContent = user.name;
+            document.getElementById('profile-grade').textContent = user.grade;
+            document.getElementById('welcome-name').textContent = user.name.split(' ')[0];
+            document.querySelector('.sidebar .w-10.h-10').textContent = user.avatar || '🧪';
+            renderTemas();
+            renderVideos();
+            renderQuiz();
+            renderStudyPlan();
+            renderLibrary();
+            renderExperiments();
+            renderDailyQuestion();
+            renderNews();
+            renderTutorIntro();
+            renderSearchResults('');
+            renderProgress();
+            applySettings(user.settings);
+            navigateTo('home');
+        }
+
+        function renderTemas() {
+            const grid = document.getElementById('temas-grid');
+            grid.innerHTML = temasCiencia.map(tema => `
+                <div onclick="openTema('${tema.title}')" class="bg-white rounded-3xl p-8 card-hover cursor-pointer border border-[#6B4423]/10 flex gap-6 items-start">
+                    <div class="w-20 h-20 ${tema.color} rounded-2xl flex items-center justify-center text-5xl flex-shrink-0 shadow-inner">${tema.img}</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-2xl mb-3">${tema.title}</h3>
+                        <p class="text-gray-600">${tema.desc}</p>
+                        <div class="mt-6 inline-flex items-center gap-2 text-[#6B4423] text-sm font-medium hover:underline">Explorar tema <span class="text-xl">→</span></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderVideos() {
+            document.getElementById('videos-grid').innerHTML = videos.map(video => `
+                <div class="bg-white rounded-3xl p-8 border border-[#6B4423]/10 card-hover">
+                    <div class="text-5xl mb-5">${video.icon}</div>
+                    <h3 class="text-2xl font-bold mb-2">${video.title}</h3>
+                    <p class="text-gray-600 mb-5">${video.desc}</p>
+                    <button onclick="completeActivity('Video: ${video.title}', 10)" class="bg-[#6B4423] text-white px-5 py-3 rounded-2xl font-semibold">Marcar visto</button>
+                </div>
+            `).join('');
+        }
+
+        function renderQuiz() {
+            document.getElementById('quiz-box').innerHTML = quiz.map((item, index) => `
+                <div class="border border-[#6B4423]/10 rounded-3xl p-5">
+                    <h3 class="font-bold mb-4">${index + 1}. ${item.q}</h3>
+                    <div class="space-y-3">
+                        ${item.a.map((answer, answerIndex) => `
+                            <label class="flex items-center gap-3 bg-[#F6E8C3]/45 rounded-2xl px-4 py-3 cursor-pointer">
+                                <input type="radio" name="q${index}" value="${answerIndex}">
+                                <span>${answer}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProgress() {
+            const user = currentUser();
+            if (!user) return;
+            user.progress = user.progress || { points: 0, activities: [], badges: ['Nuevo Antoniano'] };
+            const points = user.progress.points;
+            document.getElementById('points-view').textContent = points;
+            document.getElementById('level-view').textContent = points >= 100 ? 'Investigador' : points >= 50 ? 'Aprendiz' : 'Explorador';
+            document.getElementById('activities-view').textContent = user.progress.activities.length;
+            document.getElementById('badges-view').innerHTML = user.progress.badges.map(badge => `
+                <span class="bg-[#F6E8C3] text-[#6B4423] rounded-2xl px-4 py-3 font-semibold">🏅 ${badge}</span>
+            `).join('');
+            renderBadges();
+            renderRanking();
+        }
+
+        function renderStudyPlan() {
+            document.getElementById('study-plan').innerHTML = studyPlan.map(item => `
+                <div class="bg-white rounded-3xl p-7 border border-[#6B4423]/10 card-hover">
+                    <div class="text-sm font-semibold text-[#228B22] mb-2">${item.day}</div>
+                    <h3 class="text-2xl font-bold mb-3">${item.title}</h3>
+                    <p class="text-gray-600 mb-5">${item.reminder}</p>
+                    <button onclick="completeActivity('Plan: ${item.title}', 10)" class="bg-[#6B4423] text-white px-5 py-3 rounded-2xl font-semibold">Marcar leccion</button>
+                </div>
+            `).join('');
+        }
+
+        function renderBadges() {
+            const user = currentUser();
+            if (!user) return;
+            const unlocked = user.progress?.badges || [];
+            document.getElementById('all-badges-view').innerHTML = allBadges.map(badge => {
+                const hasBadge = unlocked.includes(badge);
+                return `
+                    <div class="${hasBadge ? 'bg-[#F6E8C3]' : 'bg-gray-100'} rounded-2xl p-5 border border-[#6B4423]/10">
+                        <div class="text-4xl mb-3">${hasBadge ? '🏅' : '🔒'}</div>
+                        <h3 class="font-bold text-lg">${badge}</h3>
+                        <p class="text-sm text-gray-600 mt-1">${hasBadge ? 'Desbloqueada' : 'Sigue sumando puntos para desbloquearla.'}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderRanking() {
+            const users = getUsers()
+                .map(user => ({ name: user.name, grade: user.grade, points: user.progress?.points || 0 }))
+                .sort((a, b) => b.points - a.points);
+            document.getElementById('ranking-table').innerHTML = users.length ? users.map((user, index) => `
+                <div class="flex items-center justify-between gap-4 bg-[#F6E8C3]/55 rounded-2xl p-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-[#6B4423] text-white flex items-center justify-center font-bold">${index + 1}</div>
+                        <div>
+                            <div class="font-bold">${user.name}</div>
+                            <div class="text-sm text-gray-600">${user.grade}</div>
+                        </div>
+                    </div>
+                    <div class="font-bold">${user.points} pts</div>
+                </div>
+            `).join('') : '<p class="text-gray-600">Aun no hay estudiantes registrados.</p>';
+        }
+
+        function renderSearchResults(query) {
+            const clean = query.trim().toLowerCase();
+            const results = temasCiencia.filter(tema => !clean || tema.title.toLowerCase().includes(clean) || tema.desc.toLowerCase().includes(clean));
+            document.getElementById('search-results').innerHTML = results.map(tema => `
+                <div onclick="openTema('${tema.title}')" class="bg-[#F6E8C3]/55 rounded-2xl p-5 cursor-pointer border border-[#6B4423]/10">
+                    <div class="text-4xl mb-3">${tema.img}</div>
+                    <h3 class="font-bold text-xl">${tema.title}</h3>
+                    <p class="text-sm text-gray-600 mt-1">${tema.desc}</p>
+                </div>
+            `).join('') || '<p class="text-gray-600">No se encontro ese tema. Prueba con materia, energia o ecosistemas.</p>';
+        }
+
+        function searchTopic(fromSearchPage = false) {
+            const input = fromSearchPage ? document.getElementById('search-page-input') : document.getElementById('home-search');
+            const query = input.value;
+            document.getElementById('search-page-input').value = query;
+            renderSearchResults(query);
+            navigateTo('buscar');
+        }
+
+        function renderLibrary() {
+            document.getElementById('library-grid').innerHTML = libraryItems.map(item => `
+                <div class="bg-white rounded-3xl p-7 border border-[#6B4423]/10 card-hover">
+                    <div class="text-5xl mb-5">${item.icon}</div>
+                    <p class="text-sm font-semibold text-[#228B22] mb-2">${item.type}</p>
+                    <h3 class="text-xl font-bold mb-2">${item.title}</h3>
+                    <p class="text-gray-600">${item.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderExperiments() {
+            document.getElementById('experiments-grid').innerHTML = experiments.map(item => `
+                <div class="bg-white rounded-3xl p-7 border border-[#6B4423]/10 card-hover">
+                    <div class="text-5xl mb-5">${item.icon}</div>
+                    <h3 class="text-2xl font-bold mb-2">${item.title}</h3>
+                    <p class="text-sm text-gray-600 mb-2"><strong>Materiales:</strong> ${item.materials}</p>
+                    <p class="text-gray-600 mb-5">${item.task}</p>
+                    <button onclick="completeActivity('Experimento: ${item.title}', 20)" class="bg-[#6B4423] text-white px-5 py-3 rounded-2xl font-semibold">Registrar experimento</button>
+                </div>
+            `).join('');
+        }
+
+        function renderDailyQuestion() {
+            const index = new Date().getDate() % dailyQuestions.length;
+            const item = dailyQuestions[index];
+            document.getElementById('daily-question-box').innerHTML = `
+                <h3 class="text-2xl font-bold mb-5">${item.q}</h3>
+                <div class="space-y-3">
+                    ${item.a.map((answer, answerIndex) => `
+                        <button onclick="answerDailyQuestion(${answerIndex}, ${item.ok})" class="w-full text-left bg-[#F6E8C3]/55 hover:bg-[#F6E8C3] rounded-2xl px-5 py-4">${answer}</button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function answerDailyQuestion(answer, ok) {
+            const result = document.getElementById('daily-result');
+            if (answer === ok) {
+                result.className = 'mt-5 rounded-2xl px-5 py-4 font-semibold bg-green-100 text-green-700';
+                result.textContent = 'Correcto. Ganaste 10 puntos por la pregunta del dia.';
+                completeActivity(`Pregunta del dia ${new Date().toLocaleDateString()}`, 10, false);
+            } else {
+                result.className = 'mt-5 rounded-2xl px-5 py-4 font-semibold bg-red-100 text-red-700';
+                result.textContent = 'Casi. Revisa el tema relacionado y vuelve a intentarlo manana.';
+            }
+        }
+
+        function renderNews() {
+            document.getElementById('news-list').innerHTML = news.map(item => `
+                <div class="bg-white rounded-3xl p-6 border border-[#6B4423]/10">
+                    <h3 class="text-2xl font-bold mb-2">${item.title}</h3>
+                    <p class="text-gray-600">${item.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTutorIntro() {
+            document.getElementById('tutor-chat').innerHTML = `
+                <div class="bg-white rounded-2xl p-4">
+                    <strong>Tutor IA:</strong> Hola. Puedes preguntarme: "Que es una celula?", "Explicame la fotosintesis" o "Hazme un examen de este tema".
+                </div>
+            `;
+        }
+
+        function askTutor() {
+            const input = document.getElementById('tutor-input');
+            const question = input.value.trim();
+            if (!question) return;
+            const lower = question.toLowerCase();
+            let answer = 'Buena pregunta. Primero identifica el concepto principal, luego escribe una definicion sencilla, un ejemplo de tu entorno y una conclusion.';
+            if (lower.includes('celula')) answer = 'La celula es la unidad basica de los seres vivos. Realiza funciones como nutricion, relacion y reproduccion. Puede ser animal o vegetal.';
+            if (lower.includes('fotosintesis')) answer = 'La fotosintesis es el proceso por el que las plantas usan luz solar, agua y dioxido de carbono para producir alimento y liberar oxigeno.';
+            if (lower.includes('examen') || lower.includes('evaluacion')) answer = 'Mini examen: 1. Define el tema. 2. Escribe un ejemplo. 3. Explica una causa. 4. Propone una solucion tecnologica relacionada.';
+            document.getElementById('tutor-chat').innerHTML += `
+                <div class="bg-[#6B4423] text-white rounded-2xl p-4 ml-auto max-w-[85%]"><strong>Tu:</strong> ${question}</div>
+                <div class="bg-white rounded-2xl p-4 max-w-[85%]"><strong>Tutor IA:</strong> ${answer}</div>
+            `;
+            input.value = '';
+            completeActivity('Uso del Tutor IA', 5, false);
+        }
+
+        function applySettings(settings = {}) {
+            document.body.classList.toggle('dark-mode', !!settings.dark);
+            document.body.classList.toggle('font-large', !!settings.largeFont);
+            document.getElementById('setting-dark').checked = !!settings.dark;
+            document.getElementById('setting-font').checked = !!settings.largeFont;
+            document.getElementById('setting-sound').checked = !!settings.sound;
+        }
+
+        function saveSettings() {
+            const user = currentUser();
+            if (!user) return;
+            user.settings = {
+                dark: document.getElementById('setting-dark').checked,
+                largeFont: document.getElementById('setting-font').checked,
+                sound: document.getElementById('setting-sound').checked
+            };
+            updateCurrentUser(user);
+            applySettings(user.settings);
+        }
+
+        function chooseAvatar(avatar) {
+            const user = currentUser();
+            if (!user) return;
+            user.avatar = avatar;
+            updateCurrentUser(user);
+            document.querySelector('.sidebar .w-10.h-10').textContent = avatar;
+        }
+
+        function navigateTo(page) {
+            document.querySelectorAll('#main-content > div').forEach(div => div.classList.add('hidden'));
+            const active = document.getElementById(`page-${page}`);
+            if (active) active.classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.id === `nav-${page}`) link.classList.add('active');
+            });
+            if (page === 'progreso') renderProgress();
+            if (page === 'insignias') renderBadges();
+            if (page === 'ranking') renderRanking();
+            if (page === 'pregunta-dia') renderDailyQuestion();
+        }
+
+        function openTema(title) {
+            completeActivity(`Tema explorado: ${title}`, 5, false);
+            alert(`Tema: ${title}\n\nIncluye explicacion sencilla, dato curioso, actividad de indagacion, pregunta de reflexion y evidencia para el cuaderno cientifico.`);
+        }
+
+        function completeActivity(name, points, notify = true) {
+            const user = currentUser();
+            if (!user) return;
+            if (!user.progress.activities.includes(name)) {
+                user.progress.activities.push(name);
+                user.progress.points += points;
+            }
+            if (user.progress.points >= 50 && !user.progress.badges.includes('Aprendiz Cientifico')) user.progress.badges.push('Aprendiz Cientifico');
+            if (user.progress.points >= 100 && !user.progress.badges.includes('Investigador Antoniano')) user.progress.badges.push('Investigador Antoniano');
+            if (user.progress.activities.some(item => item.startsWith('Tema explorado')) && !user.progress.badges.includes('Explorador de Temas')) user.progress.badges.push('Explorador de Temas');
+            if (user.progress.activities.length >= 6 && !user.progress.badges.includes('Experto en Retos')) user.progress.badges.push('Experto en Retos');
+            updateCurrentUser(user);
+            renderProgress();
+            if (notify) alert(`Actividad completada: ${name}\n+${points} puntos`);
+        }
+
+        function gradeQuiz() {
+            let score = 0;
+            quiz.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && Number(selected.value) === item.ok) score++;
+            });
+            const result = document.getElementById('quiz-result');
+            result.className = 'mt-5 rounded-2xl px-5 py-4 font-semibold bg-green-100 text-green-700';
+            result.textContent = `Puntaje: ${score}/${quiz.length}. ${score === quiz.length ? 'Excelente trabajo cientifico.' : 'Sigue practicando y revisa los temas.'}`;
+            completeActivity(`Evaluacion rapida: ${score}/${quiz.length}`, score * 10, false);
+        }
+
+        function bindEvents() {
+            document.getElementById('logout-button').addEventListener('click', logoutUser);
+        }
+
+        window.onload = () => {
+            bindEvents();
+            const user = currentUser();
+            if (user) {
+                startApp(user);
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                setAuthMode('login');
+            }
+        };
+    </script>
+</body>
+</html>
